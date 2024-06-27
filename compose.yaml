@@ -13,6 +13,7 @@ services:
       - app-network
     depends_on:
       - mysql
+      - node
   mysql:
     image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
     ports:
@@ -34,7 +35,24 @@ services:
       timeout: 5s
     networks:
       - app-network
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - app-network
 #Docker Networks
 networks:
   app-network:
     driver: bridge
+#Docker Volumes
+#volumes:
+#  vendor:
+#  node_modules:
