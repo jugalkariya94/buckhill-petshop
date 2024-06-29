@@ -26,17 +26,17 @@ class UserFactory extends Factory
     {
         return [
             'uuid' => Uuid::uuid4()->toString(),
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
+            'first_name' => fake()->firstName,
+            'last_name' => fake()->lastName,
             'is_admin' => false,
-            'email' => $this->faker->unique()->safeEmail,
-            'email_verified_at' => $this->faker->dateTime(),
+            'email' => fake()->unique()->safeEmail,
+            'email_verified_at' => fake()->dateTime(),
             'password' => Hash::make('password'), // password
             'avatar' => null,
-            'address' => $this->faker->address,
-            'phone_number' => $this->faker->phoneNumber,
-            'is_marketing' => $this->faker->boolean,
-            'last_login_at' => $this->faker->dateTime(),
+            'address' => fake()->address,
+            'phone_number' => fake()->phoneNumber(),
+            'is_marketing' => fake()->boolean(),
+            'last_login_at' => fake()->dateTime(),
         ];
     }
 

@@ -119,6 +119,7 @@ return [
         'algo' => env('JWT_ALGO', 'RS256'),
         'public_key' => env('JWT_PUBLIC_KEY', storage_path('oauth-public.pem')),
         'private_key' => env('JWT_PRIVATE_KEY', storage_path('oauth-private.pem')),
+        'passphrase' => env('JWT_PASSPHRASE', 'secret'),
     ],
 
 ];
