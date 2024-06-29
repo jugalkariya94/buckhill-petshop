@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateUserRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use Illuminate\Http\Request;
@@ -35,18 +36,22 @@ class AuthController extends Controller
      *              @OA\Property(property="address", type="string", example="1234 Elm St", description="The address of the user", required=true),
      *              @OA\Property(property="phone_number", type="string", example="1234567890", description="The phone number of the user", required=true),
      *              @OA\Property(property="is_marketing", type="boolean", example=true, description="Whether the user wants to receive marketing emails", required=false),
-     *              @OA\Property(property="is_admin", type="boolean", example=false, description="Whether the user is an admin", required=false)
+     *              @OA\Property(property="avatar", type="string", example="48da3352-8d93-41a4-ab67-e17674dbc307", description="The avatar of the user", required=false),
      *         )
      *     ),
      *     @OA\Response(response=201, description="User created successfully"),
+     *     @OA\Response(response=400, description="Bad request")
      *     @OA\Response(response=422, description="Validation error")
+     *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function createUser(Request $request)
+    public function createUser(CreateUserRequest $request): \Illuminate\Http\JsonResponse
     {
         try {
+
             // Register the user
-            $user = $this->authService->register($request->all());
+            $userData = $request->safe()->only(['first_name', 'last_name', 'email', 'password', 'address', 'phone_number', 'is_marketing', 'avatar']);
+            $user = $this->authService->register($userData);
 
             // Create a token for the user
             // remove comment to enable JWT token on registration

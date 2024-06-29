@@ -15,7 +15,7 @@ class AuthService
 {
 
     /**
-     * @param array $data The data to register the user with
+     * @param array<mixed> $data The data to register the user with
      * @param bool $triggerEvent Whether to trigger the UserRegistered event
      *
      * @return User The registered user
@@ -32,6 +32,7 @@ class AuthService
             'phone_number' => $data['phone_number'],
             'is_marketing' => !empty($data['is_marketing']),
             'is_admin' => false,
+            'avatar' => $data['avatar'] ?? null,
         ]);
 
         // Fire the UserRegistered event
