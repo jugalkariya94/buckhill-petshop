@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\LoginUserRequest;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\JWTService;
@@ -83,7 +84,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
         try {
             $user = $this->authService->login($request->email, $request->password);
