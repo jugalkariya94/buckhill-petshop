@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Models\User;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -60,6 +63,36 @@ class AuthController extends Controller
             return response()->json(['success' => true], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/user/login",
+     *     summary="User login",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user", required=true),
+     *             @OA\Property(property="password", type="string", example="password", description="The password of the user", required=true)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Login successful"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function login(Request $request)
+    {
+        try {
+            $user = $this->authService->login($request->email, $request->password);
+            $token = $this->jwtService->createToken($user);
+            return response()->json(['success' => true, 'access_token' => $token]);
+        } catch (InvalidCredentialsException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 401);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 }

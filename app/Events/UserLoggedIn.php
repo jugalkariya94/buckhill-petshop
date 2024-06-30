@@ -12,11 +12,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * Class UserRegistered
+ * Class UserLoggedIn
  * @package App\Events
- * Event that is fired when a user is registered.
+ * Event that is fired when a user logs in.
  */
-class UserRegistered
+class UserLoggedIn
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
