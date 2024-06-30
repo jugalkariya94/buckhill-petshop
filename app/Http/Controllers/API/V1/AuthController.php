@@ -57,7 +57,7 @@ class AuthController extends Controller
             // remove comment to enable JWT token on registration
             // $token = $this->jwtService->createToken($user);
 
-            return response()->json(['success' => true], Response::HTTP_OK);
+            return response()->json(['success' => true], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
