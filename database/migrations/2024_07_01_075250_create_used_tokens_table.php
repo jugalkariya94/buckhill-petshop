@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('used_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('token');
+            $table->text('token');
             $table->timestamps();
         });
     }

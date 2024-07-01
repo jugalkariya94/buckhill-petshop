@@ -118,4 +118,33 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/user",
+     *     summary="Get user details",
+     *     @OA\Response(response=200, description="Fetched details successfully"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+    public function get(Request $request): JsonResponse
+    {
+        try {
+
+            $token = request()->bearerToken();
+
+            $parsedToken = $this->jwtService->parseToken($token);
+            $this->jwtService->validateToken($parsedToken);
+
+            $userUuid = $parsedToken->claims()->get('sub');
+
+            $user = \App\Models\User::find($userUuid);
+            // logout operation
+            $this->authService->logout($token);
+
+            return response()->json(['success' => true, 'user' => $user]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
 }
