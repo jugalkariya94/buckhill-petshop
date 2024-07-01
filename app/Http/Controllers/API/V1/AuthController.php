@@ -6,9 +6,11 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginUserRequest;
+use App\Models\UsedToken;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\JWTService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -49,7 +51,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function createUser(CreateUserRequest $request): \Illuminate\Http\JsonResponse
+    public function createUser(CreateUserRequest $request): JsonResponse
     {
         try {
 
@@ -84,7 +86,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function login(LoginUserRequest $request)
+    public function login(LoginUserRequest $request): JsonResponse
     {
         try {
             $user = $this->authService->login($request->email, $request->password);
@@ -92,6 +94,29 @@ class AuthController extends Controller
             return response()->json(['success' => true, 'access_token' => $token]);
         } catch (InvalidCredentialsException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 401);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/user/logout",
+     *     summary="User logout",
+     *     @OA\Response(response=200, description="Logout successful"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        try {
+
+            $token = request()->bearerToken();
+
+            // logout operation
+            $this->authService->logout($token);
+
+            return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }

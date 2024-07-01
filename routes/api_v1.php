@@ -7,5 +7,6 @@ Route::prefix('v1')->group(function () {
     Route::group(['name' => 'auth.'], function () {
         Route::post('/user/create', [\App\Http\Controllers\API\V1\AuthController::class, 'createUser'])->name('user.create');
         Route::post('/user/login', [\App\Http\Controllers\API\V1\AuthController::class, 'login'])->name('user.login');
+        Route::get('/user/logout', [\App\Http\Controllers\API\V1\AuthController::class, 'logout'])->name('user.logout');
     });
 });
