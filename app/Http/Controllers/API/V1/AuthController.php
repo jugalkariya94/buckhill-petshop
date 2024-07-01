@@ -151,4 +151,32 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/user/forgot-password",
+     *     summary="Forgot password",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Email sent if user exists"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $email = $request->email;
+        $this->authService->sendPasswordResetLink($email);
+
+        // Following code is to get reset token for the user
+        // this is only for the current test purposes and shouldn't be used while working on actual application
+        $resetToken = \DB::table('password_reset_tokens')->where('email', $email)->first();
+
+        return response()->json(['message' => 'If your email exists in our system, you will receive a password reset link shortly.',
+            'token' => $resetToken
+        ]);
+    }
 }

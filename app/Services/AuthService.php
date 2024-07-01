@@ -8,6 +8,7 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Models\UsedToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 /**
  * Class AuthService
@@ -86,4 +87,12 @@ class AuthService
         UsedToken::create(['token' => $token]);
     }
 
+    public function sendPasswordResetLink(string $email): void
+    {
+        $status = Password::sendResetLink(['email' => $email]);
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            throw new \Exception("Failed to send password reset link.");
+        }
+    }
 }
