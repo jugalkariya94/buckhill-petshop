@@ -125,8 +125,8 @@ class AuthController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/user",
-     *     summary="Get user details",
-     *     @OA\Response(response=200, description="Fetched details successfully"),
+     *     summary="Get authenticated user data",
+     *     @OA\Response(response=200, description="Successful operation"),
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -135,12 +135,14 @@ class AuthController extends Controller
         try {
 
             $token = request()->bearerToken();
+            if (!$token)
+                return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
 
             // get user uuid from token
             $userUuid = $this->jwtService->getUserUuidFromToken($token);
 
             // get user details
-            $user = $this->userService->get($userUuid);
+            $user = $this->userService->getFromUuid($userUuid);
             // logout operation
             $this->authService->logout($token);
 

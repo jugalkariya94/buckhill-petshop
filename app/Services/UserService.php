@@ -35,9 +35,18 @@ class UserService
      * @param array $data
      * @return User
      */
-    public function get(string $uuid): User
+    public function getFromUuid(string $uuid): User
     {
         return $this->model->where('uuid', $uuid)->first();
+    }
+
+    /**
+     * @param array $data
+     * @return User
+     */
+    public function getFromEmail(string $email): User
+    {
+        return $this->model->where('email', $email)->first();
     }
 
 }
