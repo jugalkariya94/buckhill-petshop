@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
@@ -166,7 +167,7 @@ class AuthController extends Controller
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
-    public function forgotPassword(Request $request): JsonResponse
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $email = $request->email;
         $this->authService->sendPasswordResetLink($email);
