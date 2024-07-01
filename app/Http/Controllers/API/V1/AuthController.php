@@ -6,14 +6,11 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginUserRequest;
-use App\Models\UsedToken;
-use App\Models\User;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
