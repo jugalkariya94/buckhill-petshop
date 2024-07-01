@@ -31,4 +31,17 @@ COPY --link . ./
 # Generate composer autoload files
 RUN composer dump-autoload --optimize
 
+# create a new linux user group called 'developer' with an arbitrary group id of '1001'
+RUN groupadd -g 1000 developer
+
+# create a new user called developer and add it to this group
+RUN useradd -u 1000 -g developer developer
+
+# change the owner and group of the current working directory to developer
+COPY --chown=developer:developer . /app
+
+# run all subsequent processes as this user
+USER developer
+
+
 ENTRYPOINT ["php", "artisan", "octane:frankenphp"]
