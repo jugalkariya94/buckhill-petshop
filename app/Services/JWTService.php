@@ -82,4 +82,17 @@ class JWTService
         $constraints = $this->config->validationConstraints();
         return $this->config->validator()->validate($token, ...$constraints);
     }
+
+    /**
+     * Get user uuid from token.
+     *
+     * @param string $token
+     * @return string
+     */
+    public function getUserUuidFromToken(string $token): string
+    {
+        $parsedToken = $this->parseToken($token);
+        $this->validateToken($parsedToken);
+        return $parsedToken->claims()->get('sub');
+    }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,11 +18,13 @@ class AuthController extends Controller
     //
     private JWTService $jwtService;
     private AuthService $authService;
+    private UserService $userService;
 
-    public function __construct(JWTService $jwtService, AuthService $authService)
+    public function __construct(JWTService $jwtService, AuthService $authService, UserService $userService)
     {
         $this->jwtService = $jwtService;
         $this->authService = $authService;
+        $this->userService = $userService;
     }
 
     /**
@@ -133,12 +136,11 @@ class AuthController extends Controller
 
             $token = request()->bearerToken();
 
-            $parsedToken = $this->jwtService->parseToken($token);
-            $this->jwtService->validateToken($parsedToken);
+            // get user uuid from token
+            $userUuid = $this->jwtService->getUserUuidFromToken($token);
 
-            $userUuid = $parsedToken->claims()->get('sub');
-
-            $user = \App\Models\User::find($userUuid);
+            // get user details
+            $user = $this->userService->get($userUuid);
             // logout operation
             $this->authService->logout($token);
 
