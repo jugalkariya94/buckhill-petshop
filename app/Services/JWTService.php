@@ -87,12 +87,15 @@ class JWTService
      * Get user uuid from token.
      *
      * @param string $token
-     * @return string
+     * @return string|null
      */
-    public function getUserUuidFromToken(string $token): string
+    public function getUserUuidFromToken(string $token): string|null
     {
         $parsedToken = $this->parseToken($token);
-        $this->validateToken($parsedToken);
-        return $parsedToken->claims()->get('sub');
+        if ($this->validateToken($parsedToken)) {
+            $this->validateToken($parsedToken);
+            return $parsedToken->claims()->get('sub');
+        }
+        return null;
     }
 }
