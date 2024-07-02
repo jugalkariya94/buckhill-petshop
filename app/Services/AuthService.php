@@ -98,7 +98,6 @@ class AuthService
     public function sendPasswordResetLink(string $email): void
     {
         $status = Password::sendResetLink(['email' => $email]);
-
         if ($status !== Password::RESET_LINK_SENT) {
             throw new \Exception("Failed to send password reset link.");
         }

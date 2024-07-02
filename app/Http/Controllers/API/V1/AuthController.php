@@ -166,20 +166,25 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(response=200, description="Email sent if user exists"),
      *     @OA\Response(response=422, description="Validation error")
+     *     @OA\Response(response=500, description="Server error")
      * )
      */
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $email = $request->email;
-        $this->authService->sendPasswordResetLink($email);
+        try {
+            $email = $request->email;
+            $this->authService->sendPasswordResetLink($email);
 
-        // Following code is to get reset token for the user
-        // this is only for the current test purposes and shouldn't be used while working on actual application
-        $resetToken = \DB::table('password_reset_tokens')->where('email', $email)->first();
+            // Following code is to get reset token for the user
+            // this is only for the current test purposes and shouldn't be used while working on actual application
+            $resetToken = \DB::table('password_reset_tokens')->where('email', $email)->first();
 
-        return response()->json(['message' => 'If your email exists in our system, you will receive a password reset link shortly.',
-            'token' => $resetToken
-        ]);
+            return response()->json(['success' => true, 'message' => 'If your email exists in our system, you will receive a password reset link shortly.',
+                'token' => $resetToken
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -198,12 +203,17 @@ class AuthController extends Controller
      *     @OA\Response(response=200, description="Password reset successful"),
      *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=400, description="Invalid token")
+     *     @OA\Response(response=500, description="Server token")
      * )
      */
     public function resetPasswordToken(ResetPasswordRequest $request): JsonResponse
     {
-        $this->authService->resetPassword($request->validated());
-        return response()->json(['message' => 'Your password has been reset successfully.']);
+        try {
+            $this->authService->resetPassword($request->validated());
+            return response()->json(['success' => true, 'message' => 'Your password has been reset successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
 }
