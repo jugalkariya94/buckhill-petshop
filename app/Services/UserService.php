@@ -32,7 +32,7 @@ class UserService
     }
 
     /**
-     * @param array $data
+     * @param array<mixed> $data
      * @return User
      */
     public function getFromUuid(string $uuid): User
@@ -41,7 +41,7 @@ class UserService
     }
 
     /**
-     * @param array $data
+     * @param array<mixed> $data
      * @return User
      */
     public function getFromEmail(string $email): User

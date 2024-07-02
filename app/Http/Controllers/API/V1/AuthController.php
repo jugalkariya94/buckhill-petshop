@@ -180,4 +180,29 @@ class AuthController extends Controller
             'token' => $resetToken
         ]);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/user/reset-password-token",
+     *     summary="Reset password using token",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string"),
+     *             @OA\Property(property="password_confirmation", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Password reset successful"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=400, description="Invalid token")
+     * )
+     */
+    public function resetPasswordToken(Request $request): JsonResponse
+    {
+        $this->authService->resetPassword($request->validated());
+        return response()->json(['message' => 'Your password has been reset successfully.']);
+    }
+
 }
