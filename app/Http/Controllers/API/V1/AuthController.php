@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use App\Services\UserService;
@@ -199,7 +200,7 @@ class AuthController extends Controller
      *     @OA\Response(response=400, description="Invalid token")
      * )
      */
-    public function resetPasswordToken(Request $request): JsonResponse
+    public function resetPasswordToken(ResetPasswordRequest $request): JsonResponse
     {
         $this->authService->resetPassword($request->validated());
         return response()->json(['message' => 'Your password has been reset successfully.']);
