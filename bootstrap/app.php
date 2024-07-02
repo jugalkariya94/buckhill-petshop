@@ -15,11 +15,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->api(prepend: [
-            JWTMiddleware::class,
+        $middleware->alias([
+            'checkToken' => JWTMiddleware::class,
         ]);
+//        $middleware->api(append: [
+//            JWTMiddleware::class,
+//        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 401);
+        });
     })->create();

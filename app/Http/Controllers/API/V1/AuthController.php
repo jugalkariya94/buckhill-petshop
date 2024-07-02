@@ -65,7 +65,7 @@ class AuthController extends Controller
             // remove comment to enable JWT token on registration
             // $token = $this->jwtService->createToken($user);
 
-            return response()->json(['success' => true], Response::HTTP_CREATED);
+            return response()->json(['success' => true, 'data' => $user], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -93,7 +93,7 @@ class AuthController extends Controller
         try {
             $user = $this->authService->login($request->email, $request->password);
             $token = $this->jwtService->createToken($user);
-            return response()->json(['success' => true, 'access_token' => $token]);
+            return response()->json(['success' => true, 'access_token' => $token, 'data' => $user]);
         } catch (InvalidCredentialsException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 401);
         } catch (\Exception $e) {
@@ -135,19 +135,8 @@ class AuthController extends Controller
     public function get(Request $request): JsonResponse
     {
         try {
-
-            $token = request()->bearerToken();
-            if (!$token)
-                return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
-
-            // get user uuid from token
-            $userUuid = $this->jwtService->getUserUuidFromToken($token);
-
             // get user details
-            $user = $this->userService->getFromUuid($userUuid);
-            // logout operation
-            $this->authService->logout($token);
-
+            $user = auth()->user();
             return response()->json(['success' => true, 'user' => $user]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constraints\SubjectMustBeAValidUser;
+use App\Models\UsedToken;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -93,9 +94,20 @@ class JWTService
     {
         $parsedToken = $this->parseToken($token);
         if ($this->validateToken($parsedToken)) {
-            $this->validateToken($parsedToken);
             return $parsedToken->claims()->get('sub');
         }
         return null;
+    }
+
+    /**
+     * Check if token was logged out.
+     *
+     * @param string $token
+     * @return bool
+     */
+    public function isTokenLoggedOut(string $token): bool
+    {
+
+        return UsedToken::where('token', $token)->exists();
     }
 }

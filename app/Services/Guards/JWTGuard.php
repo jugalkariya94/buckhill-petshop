@@ -38,6 +38,11 @@ class JWTGuard implements Guard
             return null;
         }
         try {
+            $loggedOutToken = $this->service->isTokenLoggedOut($tokenString);
+
+            if ($loggedOutToken) {
+                return null;
+            }
             // Parse the token
             $authId = $this->service->getUserUuidFromToken($tokenString);
 
