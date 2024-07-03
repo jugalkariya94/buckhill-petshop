@@ -51,4 +51,39 @@ class PostController extends Controller
         $blogs = Post::paginate()->toArray();
         return response()->json($blogs, 200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/main/blog/{uuid}",
+     *     summary="Get a blog post",
+     *     tags={"Posts"},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="The UUID of the blog post",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="uuid"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="The blog post",
+     *         @OA\JsonContent(ref="#/components/schemas/BlogPost")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found"
+     *     )
+     * )
+     */
+    public function get(Post $post)
+    {
+        return response()->json(['success' => true, 'data' => $post], 200);
+    }
 }

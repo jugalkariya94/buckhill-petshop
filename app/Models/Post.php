@@ -11,6 +11,7 @@ class Post extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $hidden = ['id'];
     protected $fillable = ['uuid', 'title', 'slug', 'content', 'metadata'];
 
     protected $casts = [

@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
         // Post routes
         Route::controller(\App\Http\Controllers\API\V1\PostController::class)->group(function () {
             Route::get('/blog', 'index')->name('blog.index');
+            Route::get('/blog/{post}', 'get')->name('blog.get');
         });
     });
 });
