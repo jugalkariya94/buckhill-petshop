@@ -4,9 +4,10 @@ import logo from '@/assets/images/Vector.svg';
 import brandName from '@/assets/images/petson..svg';
 import Menu from "@/components/Menu.vue";
 import CartButton from "@/components/CartButton.vue";
+import LoginButton from "@/components/LoginButton.vue";
 
 export default defineComponent({
-    components: {CartButton, Menu},
+    components: {LoginButton, CartButton, Menu},
     data() {
         return {
             logo,
@@ -39,20 +40,9 @@ export default defineComponent({
             <v-spacer></v-spacer>
             <v-row justify="end" no-gutters>
                 <cart-button></cart-button>
-                <v-btn
-                    class="mx-2"
-                    color="white"
-                    variant="text"
-                    large
-                >
-                    Login
-                </v-btn>
-
-
-                <v-avatar
-                    class="d-flex"
-                    size="32"
-                >
+                <login-button></login-button>
+                <v-avatar class="d-flex" size="32">
+                    <v-img src="https://api.dicebear.com/7.x/pixel-art/svg"></v-img>
                 </v-avatar>
             </v-row>
         </v-container>
