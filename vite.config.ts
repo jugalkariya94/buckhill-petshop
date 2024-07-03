@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 import vue from '@vitejs/plugin-vue';
 import { defineConfig, type UserConfig } from 'vite';
-
+import laravel from 'laravel-vite-plugin';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { checker } from 'vite-plugin-checker';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
@@ -17,7 +17,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 export default defineConfig(({ command, mode }): UserConfig => {
     const config: UserConfig = {
         // https://vitejs.dev/config/shared-options.html#base
-        base: './resources/js/',
+        // base: './',
         // https://vitejs.dev/config/shared-options.html#define
         define: { 'process.env': {} },
         plugins: [
@@ -32,7 +32,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
             // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin
             vuetify({
                 autoImport: true,
-                styles: { configFile: 'src/styles/settings.scss' },
+                styles: { configFile: './resources/css/app.scss' },
             }),
             // vite-plugin-checker
             // https://github.com/fi3ework/vite-plugin-checker
@@ -42,12 +42,21 @@ export default defineConfig(({ command, mode }): UserConfig => {
                 // eslint: { lintCommand: 'eslint' },
                 // stylelint: { lintCommand: 'stylelint' },
             }),
+
+            laravel([
+                'resources/sass/app.scss',
+                'resources/js/app.ts',
+            ]),
         ],
         // https://vitejs.dev/config/server-options.html
         server: {
             fs: {
                 // Allow serving files from one level up to the project root
                 allow: ['..'],
+            },
+            host: '0.0.0.0',
+            hmr: {
+                host: 'localhost'
             },
         },
         // Resolver
