@@ -2,27 +2,14 @@
 import {defineComponent} from 'vue'
 import logo from '@/assets/images/Vector.svg';
 import brandName from '@/assets/images/petson..svg';
+import Menu from "@/components/Menu.vue";
 
 export default defineComponent({
+    components: {Menu},
     data() {
         return {
             logo,
             brandName,
-            links: [
-                {
-                    name: 'Products',
-                    route: '/products',
-                    icon: 'mdi-chevron-down'
-                },
-                {
-                    name: 'Promotions',
-                    route: '/promotions'
-                },
-                {
-                    name: 'Blog',
-                    route: '/blog'
-                }
-            ]
         }
     }
 
@@ -47,17 +34,7 @@ export default defineComponent({
                 </v-app-bar-nav-icon>
             </v-row>
             <v-spacer></v-spacer>
-            <v-row justify="center" no-gutters>
-                <v-btn
-                    v-for="link in links"
-                    :key="link.name"
-                    class="mx-2"
-                    color="white"
-                    variant="text"
-                >
-                    {{ link.name }} <v-icon :icon="link.icon" v-if="link.icon"></v-icon>
-                </v-btn>
-            </v-row>
+            <Menu></Menu>
             <v-spacer></v-spacer>
             <v-row justify="end" no-gutters>
                 <v-btn
