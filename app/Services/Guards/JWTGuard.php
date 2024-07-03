@@ -45,12 +45,18 @@ class JWTGuard implements Guard
             }
 
             // Parse the token
-            $authId = $this->service->getUserUuidFromToken($tokenString);
-            if (!$authId) {
-                return null;
-            }
+//            $authId = $this->service->getUserUuidFromToken($tokenString);
+//            if (!$authId) {
+//                return null;
+//            }
+//
+//            $this->user = $this->provider->retrieveById($authId);
+            $tokenUniqueId = $this->service->getTokenUniqueId($tokenString);
 
-            $this->user = $this->provider->retrieveById($authId);
+            // get user from token unique id
+            $this->user = $this->service->getUserFromTokenUniquId($tokenUniqueId);
+
+            $this->service->tokenUsed($tokenUniqueId);
 
             return $this->user;
         } catch (\Exception $e) {

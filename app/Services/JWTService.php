@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Constraints\SubjectMustBeAValidUser;
 use App\Models\JWTToken;
 use App\Models\UsedToken;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -124,7 +125,46 @@ class JWTService
      */
     public function isTokenLoggedOut(string $token): bool
     {
-
         return UsedToken::where('token', $token)->exists();
+    }
+
+    /**
+     * Get unique id from token.
+     *
+     * @param string $token
+     * @return string|null
+     */
+    public function getTokenUniqueId(string $token): string|null
+    {
+        $parsedToken = $this->parseToken($token);
+        $uniqueId = null;
+        if ($this->validateToken($parsedToken)) {
+            $uniqueId =  $parsedToken->claims()->get('jti', null);
+        }
+
+        return $uniqueId;
+    }
+
+    /**
+     * Get user from token unique id.
+     *
+     * @param string $tokenUniqueId
+     * @return User
+     */
+    public function getUserFromTokenUniquId(string $tokenUniqueId): User
+    {
+        $token = $this->model->where('unique_id', $tokenUniqueId)->firstOrFail();
+        return $token->user;
+    }
+
+    /**
+     * Update last used field of token.
+     *
+     * @param string $tokenUniqueId
+     * @return string|null
+     */
+    public function tokenUsed(string $tokenUniqueId): void
+    {
+        $this->model->where('unique_id', $tokenUniqueId)->update(['last_used_at' => now()]);
     }
 }
