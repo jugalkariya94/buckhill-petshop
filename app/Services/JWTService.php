@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constraints\SubjectMustBeAValidUser;
+use App\Models\JWTToken;
 use App\Models\UsedToken;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Configuration;
@@ -23,18 +24,21 @@ class JWTService
      */
     private Configuration $config;
 
+    private JWTToken $model;
+
     /**
      * JWTService constructor.
      *
      * Initializes the JWT configuration.
      */
-    public function __construct()
+    public function __construct(JWTToken $model)
     {
         $this->config = Configuration::forAsymmetricSigner(
             new Sha256(),
             InMemory::file(config('auth.jwt.private_key'), config('auth.jwt.passphrase')),
             InMemory::file(config('auth.jwt.public_key'), config('auth.jwt.passphrase'))
         );
+        $this->model = $model;
     }
 
     /**
@@ -47,14 +51,23 @@ class JWTService
     {
         $now = new DateTimeImmutable();
 
+        $tokenData = [
+            'user_id' => $user->id,
+            'unique_id' => bin2hex(random_bytes(16)),
+            'token_title' => 'auth_token',
+            'expires_at' => $now->modify('+'.config('auth.jwt.ttl') .'minutes')
+        ];
+
+        $this->model->create($tokenData);
+
         return $this->config->builder()
             ->issuedBy(config('app.url'))
             ->permittedFor(config('app.url'))
-            ->identifiedBy(bin2hex(random_bytes(16)))
+            ->identifiedBy($tokenData['unique_id'])
             ->relatedTo($user->getAuthIdentifier())
             ->issuedAt($now)
             ->canOnlyBeUsedAfter($now)
-            ->expiresAt($now->modify('+'.config('auth.jwt.ttl') .'minutes'))
+            ->expiresAt($tokenData['expires_at'])
             ->withClaim('uid', $user->getAuthIdentifier())
             ->getToken($this->config->signer(), $this->config->signingKey())
             ->toString();

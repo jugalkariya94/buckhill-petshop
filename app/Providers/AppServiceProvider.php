@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\JWTToken;
 use App\Services\Guards\JWTGuard;
 use App\Services\JWTService;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->register(\L5Swagger\L5SwaggerServiceProvider::class);
         $this->app->singleton(JWTService::class, function ($app) {
-            return new JWTService();
+            return new JWTService(new JWTToken());
         });
     }
 
