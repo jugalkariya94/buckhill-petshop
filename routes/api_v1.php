@@ -18,4 +18,12 @@ Route::prefix('v1')->group(function () {
         });
 
     });
+
+    // Main routes
+    Route::prefix('main')->group(function () {
+        // Post routes
+        Route::controller(\App\Http\Controllers\API\V1\PostController::class)->group(function () {
+            Route::get('/blog', 'index')->name('blog.index');
+        });
+    });
 });
