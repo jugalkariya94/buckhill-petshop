@@ -54,7 +54,7 @@ class JWTService
             ->relatedTo($user->getAuthIdentifier())
             ->issuedAt($now)
             ->canOnlyBeUsedAfter($now)
-            ->expiresAt($now->modify('+1 hour'))
+            ->expiresAt($now->modify('+'.config('auth.jwt.ttl') .'minutes'))
             ->withClaim('uid', $user->getAuthIdentifier())
             ->getToken($this->config->signer(), $this->config->signingKey())
             ->toString();
@@ -79,6 +79,10 @@ class JWTService
      */
     public function validateToken(Token $token): bool
     {
+        // check if token is expired
+        if ($token->isExpired(now())) {
+            return false;
+        }
         $this->config->setValidationConstraints(new SubjectMustBeAValidUser());
         $constraints = $this->config->validationConstraints();
         return $this->config->validator()->validate($token, ...$constraints);

@@ -43,8 +43,12 @@ class JWTGuard implements Guard
             if ($loggedOutToken) {
                 return null;
             }
+
             // Parse the token
             $authId = $this->service->getUserUuidFromToken($tokenString);
+            if (!$authId) {
+                return null;
+            }
 
             $this->user = $this->provider->retrieveById($authId);
 

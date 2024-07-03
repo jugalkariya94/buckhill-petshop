@@ -118,7 +118,7 @@ return [
 
     /* JWT Settings */
     'jwt' => [
-        'ttl' => env('JWT_TTL', 60),
+        'ttl' => env('JWT_TTL', 60), // TTL in minutes
         'refresh_ttl' => env('JWT_REFRESH_TTL', 10080), // 1 week
         'algo' => env('JWT_ALGO', 'RS256'),
         'public_key' => env('JWT_PUBLIC_KEY', storage_path('oauth-public.pem')),

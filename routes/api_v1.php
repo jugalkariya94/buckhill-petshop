@@ -9,6 +9,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/user', 'get')->name('user.get')->middleware(['checkToken']);
         Route::post('/user/create', 'createUser')->name('user.create');
         Route::post('/user/login', 'login')->name('user.login');
+        Route::get('/user/logout', 'logout')->name('user.logout');
         Route::post('/user/forgot-password', 'forgotPassword')->name('user.password.forgot');
         Route::post('/user/reset-password-token', 'resetPasswordToken')->name('user.password.reset');
     });

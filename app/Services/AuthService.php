@@ -8,6 +8,7 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Models\UsedToken;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
