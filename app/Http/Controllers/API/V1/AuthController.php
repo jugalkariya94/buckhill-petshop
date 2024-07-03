@@ -8,6 +8,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use App\Services\UserService;
@@ -16,6 +17,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -226,4 +228,46 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Update user information.
+     *
+     * @OA\Put(
+     *     path="/api/v1/user/edit",
+     *     summary="Update user information",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="first_name", type="string", example="John", description="The first name of the user"),
+     *             @OA\Property(property="last_name", type="string", example="Doe", description="The last name of the user"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user"),
+     *             @OA\Property(property="password", example="password", type="string"),
+     *             @OA\Property(property="password_confirmation", example="password", type="string")
+     *             @OA\Property(property="address", type="string", example="1234 Elm St", description="The address of the user"),
+     *             @OA\Property(property="phone_number", type="string", example="1234567890", description="The phone number of the user"),
+     *             @OA\Property(property="is_marketing", type="boolean", example=true, description="Whether the user wants to receive marketing emails"),
+     *             @OA\Property(property="avatar", type="string", example="48da3352-8d93-41a4-ab67-e17674dbc307", description="The avatar of the user")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="User updated successfully"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function updateUser(UpdateUserRequest $request): JsonResponse
+    {
+        try {
+            $user = auth()->user();
+            $validatedData = $request->validated();
+            if (isset($validatedData['password'])) {
+                $validatedData['password'] = Hash::make($validatedData['password']);
+            }
+            $user->update($validatedData);
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'User updated successfully', 'user' => $user], Response::HTTP_OK);
+        } catch (Exception $e) {
+            // Return error response if something goes wrong
+            return response()->json(['success' => false, 'error' => 'Failed to update user: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

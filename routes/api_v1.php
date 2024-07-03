@@ -14,6 +14,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['checkToken'])->group(function () {
             Route::get('/user', 'get')->name('user.get');
             Route::delete('/user', 'deleteUser')->name('user.delete');
+            Route::put('/user/edit', 'updateUser')->name('user.update');
         });
 
     });
