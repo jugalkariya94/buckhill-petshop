@@ -3,9 +3,10 @@ import {defineComponent} from 'vue'
 import logo from '@/assets/images/Vector.svg';
 import brandName from '@/assets/images/petson..svg';
 import Menu from "@/components/Menu.vue";
+import CartButton from "@/components/CartButton.vue";
 
 export default defineComponent({
-    components: {Menu},
+    components: {CartButton, Menu},
     data() {
         return {
             logo,
@@ -37,14 +38,7 @@ export default defineComponent({
             <Menu></Menu>
             <v-spacer></v-spacer>
             <v-row justify="end" no-gutters>
-                <v-btn
-                    class="mx-2"
-                    color="white"
-                    variant="outlined"
-                >
-                    <v-icon icon="mdi-cart"></v-icon>
-                    Cart (0)
-                </v-btn>
+                <cart-button></cart-button>
                 <v-btn
                     class="mx-2"
                     color="white"
