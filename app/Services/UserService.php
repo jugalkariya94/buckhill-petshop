@@ -16,8 +16,14 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserService
 {
+    /**
+     * @var mixed
+     */
     private $model;
 
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public function __construct()
     {
         $this->model = app()->make(User::class);
@@ -47,6 +53,15 @@ class UserService
     public function getFromEmail(string $email): User
     {
         return $this->model->where('email', $email)->first();
+    }
+
+    /**
+     * @param string $uuid The UUID of the user to delete
+     * @return void
+     */
+    public function delete(string $uuid): void
+    {
+        $this->model->where('uuid', $uuid)->delete();
     }
 
 }

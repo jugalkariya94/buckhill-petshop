@@ -11,6 +11,8 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use App\Services\JWTService;
 use App\Services\UserService;
+use DB;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -66,7 +68,7 @@ class AuthController extends Controller
             // $token = $this->jwtService->createToken($user);
 
             return response()->json(['success' => true, 'data' => $user], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -96,30 +98,7 @@ class AuthController extends Controller
             return response()->json(['success' => true, 'access_token' => $token, 'data' => $user]);
         } catch (InvalidCredentialsException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 401);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/v1/user/logout",
-     *     summary="User logout",
-     *     @OA\Response(response=200, description="Logout successful"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        try {
-
-            $token = request()->bearerToken();
-
-            // logout operation
-            $this->authService->logout($token);
-
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
@@ -138,7 +117,7 @@ class AuthController extends Controller
             // get user details
             $user = auth()->user();
             return response()->json(['success' => true, 'user' => $user]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
@@ -166,12 +145,10 @@ class AuthController extends Controller
 
             // Following code is to get reset token for the user
             // this is only for the current test purposes and shouldn't be used while working on actual application
-            $resetToken = \DB::table('password_reset_tokens')->where('email', $email)->first();
+            $resetToken = DB::table('password_reset_tokens')->where('email', $email)->first();
 
-            return response()->json(['success' => true, 'message' => 'If your email exists in our system, you will receive a password reset link shortly.',
-                'token' => $resetToken
-            ]);
-        } catch (\Exception $e) {
+            return response()->json(['success' => true, 'message' => 'If your email exists in our system, you will receive a password reset link shortly.', 'token' => $resetToken]);
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
@@ -200,8 +177,52 @@ class AuthController extends Controller
         try {
             $this->authService->resetPassword($request->validated());
             return response()->json(['success' => true, 'message' => 'Your password has been reset successfully.']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/user",
+     *     summary="Delete user",
+     *     @OA\Response(response=200, description="User deleted successfully"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     *    @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function deleteUser(Request $request): JsonResponse
+    {
+        try {
+            $user = auth()->user();
+            $this->userService->delete($user->uuid);
+            $this->authService->logout($request->bearerToken());
+            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/user/logout",
+     *     summary="User logout",
+     *     @OA\Response(response=200, description="Logout successful"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        try {
+
+            $token = request()->bearerToken();
+
+            // logout operation
+            $this->authService->logout($token);
+
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
