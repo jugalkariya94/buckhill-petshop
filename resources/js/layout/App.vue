@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
 
-const links = [
-  'Products',
-  'Promotions',
-  'Blog',
-]
 </script>
 
 <template>
     <v-app>
-        <Header></Header>
-
+        <v-main>
+            <Header></Header>
+            <v-container>
+                <router-view></router-view>
+            </v-container>
+        </v-main>
     </v-app>
 </template>
 
