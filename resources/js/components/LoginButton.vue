@@ -15,8 +15,7 @@ export default defineComponent({
         <v-btn
             class="mx-2"
             color="white"
-            variant="text"
-            large
+            variant="outlined"
         >Login</v-btn>
 </template>
 
