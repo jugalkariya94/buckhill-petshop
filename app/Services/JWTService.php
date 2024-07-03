@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Constraints\SubjectMustBeAValidUser;
 use App\Models\JWTToken;
-use App\Models\UsedToken;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Configuration;
@@ -125,7 +124,8 @@ class JWTService
      */
     public function isTokenLoggedOut(string $token): bool
     {
-        return UsedToken::where('token', $token)->exists();
+        $tokenUniqueId = $this->getTokenUniqueId($token);
+        return $this->model->where('unique_id', $tokenUniqueId)->expired()->exists();
     }
 
     /**
@@ -166,5 +166,17 @@ class JWTService
     public function tokenUsed(string $tokenUniqueId): void
     {
         $this->model->where('unique_id', $tokenUniqueId)->update(['last_used_at' => now()]);
+    }
+
+    /**
+     * Mark token as expired.
+     *
+     * @param string $tokenUniqueId
+     * @return string|null
+     */
+    public function markTokenAsExpired(string $token): void
+    {
+        $tokenUniqueId = $this->getTokenUniqueId($token);
+        $this->model->where('unique_id', $tokenUniqueId)->update(['last_used_at' => now(), 'expires_at' => now()]);
     }
 }

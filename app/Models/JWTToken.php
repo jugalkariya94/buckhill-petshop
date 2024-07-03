@@ -37,6 +37,15 @@ class JWTToken extends Model
         return Attribute::make(get: $this->expires_at < now());
     }
 
+    /**
+     * Check if the token is expired
+     * @return Builder
+     */
+    public function scopeExpired(): Builder
+    {
+        return $this->where('expires_at', '<', now());
+    }
+
 
     /**
      * Get the prunable model query.

@@ -198,7 +198,7 @@ class AuthController extends Controller
         try {
             $user = auth()->user();
             $this->userService->delete($user->uuid);
-            $this->authService->logout($request->bearerToken());
+            $this->jwtService->markTokenAsExpired($request->bearerToken());
             return response()->json(['success' => true, 'message' => 'User deleted successfully']);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
@@ -216,12 +216,9 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         try {
-
             $token = request()->bearerToken();
-
             // logout operation
-            $this->authService->logout($token);
-
+            $this->jwtService->markTokenAsExpired($token);
             return response()->json(['success' => true]);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);

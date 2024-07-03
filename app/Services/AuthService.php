@@ -5,10 +5,8 @@ namespace App\Services;
 use App\Events\UserLoggedIn;
 use App\Events\UserRegistered;
 use App\Exceptions\InvalidCredentialsException;
-use App\Models\UsedToken;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
@@ -75,18 +73,6 @@ class AuthService
         // Return the user
         return $user;
 
-    }
-
-    /**
-     * @param string $token
-     * @return void
-     *
-     * Logout a user
-     */
-    public function logout(string $token): void
-    {
-        // Add logggd out token to the database
-        UsedToken::create(['token' => $token]);
     }
 
     /**
