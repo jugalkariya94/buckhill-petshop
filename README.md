@@ -25,20 +25,26 @@ Follow these steps to get your development environment running:
    ```bash
    cp .env.example .env
    ```
-   
+
 4. **Update the following environment variables in the `.env` file with your values:**
 
-```bash
+    ```bash
     APP_URL=http://localhost:8000
+    
     DB_CONNECTION=mysql
     DB_HOST=host.docker.internal
     DB_PORT=3306
     DB_DATABASE=buckhill_petshop
     DB_USERNAME=root
     DB_PASSWORD=
+    
     VITE_API_URL=http://localhost:8000/api/v1
-
-```
+   
+    JWT_PUBLIC_KEY=storage/oauth-public.key
+    JWT_PRIVATE_KEY=storage/oauth-private.key
+    JWT_PASSPHRASE=secret
+    
+    ```
 5. **Build and Run with Docker**
 
    Use Docker Compose to build and run the application and its associated services.
@@ -57,12 +63,19 @@ Follow these steps to get your development environment running:
 
    ```
     docker compose exec buckhill-backend php artisan migrate --seed
-    
     ```
+8. **Generate private and public key for JWT**
+
+   ```bash
+   docker compose exec buckhill-backend openssl genpkey -algorithm RSA -out storage/oauth-private.key -aes256
+   ```
+   ```bash
+   docker compose exec buckhill-backend openssl rsa -pubout -in storage/oauth-private.key -out storage/oauth-public.key
+   ```    
 
 ## Usage
 
-After successfully running the application using Docker, you can access the application at `http://localhost:8000` or the port you specified in your `.env` file.
+After successfully running the application using Docker, you can access the application at `http://localhost:8000` or the url you specified in your `.env` file.
 
 ## Running Tests
 
