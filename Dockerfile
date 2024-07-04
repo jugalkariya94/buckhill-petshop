@@ -40,8 +40,9 @@ RUN useradd -u 1000 -g developer developer
 # change the owner and group of the current working directory to developer
 COPY --chown=developer:developer . /app
 
+COPY --chown=developer:developer . /app
+
 # run all subsequent processes as this user
 USER developer
-
 
 ENTRYPOINT ["php", "artisan", "octane:frankenphp"]

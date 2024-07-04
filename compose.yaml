@@ -1,6 +1,7 @@
 # compose.yaml
 services:
-  frankenphp:
+  buckhill-backend:
+    container_name: 'buckhill-backend'
     build:
       context: .
     entrypoint: php artisan octane:frankenphp --max-requests=1
@@ -9,11 +10,14 @@ services:
     volumes:
       - .:/app
       - /app/vendor
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
     networks:
       - app-network
     depends_on:
       - mysql
-      - node
+      - buckhill-frontend
   mysql:
     image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
     ports:
@@ -35,7 +39,8 @@ services:
       timeout: 5s
     networks:
       - app-network
-  node:
+  buckhill-frontend:
+    container_name: 'buckhill-frontend'
     build:
       context: .
       dockerfile: Dockerfile.node
@@ -54,7 +59,3 @@ services:
 networks:
   app-network:
     driver: bridge
-#Docker Volumes
-#volumes:
-#  vendor:
-#  node_modules:
