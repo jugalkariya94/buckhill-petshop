@@ -52,7 +52,8 @@ class JWTService
         $now = new DateTimeImmutable();
 
         $tokenData = [
-            'user_id' => $user->id,
+            // Because we are using hardcoded ID property instead of UUID or getAuthIdentifier(), we need to ignore the type check
+            'user_id' => $user->id, // @phpstan-ignore-line
             'unique_id' => bin2hex(random_bytes(16)),
             'token_title' => 'auth_token',
             'expires_at' => $now->modify('+'.config('auth.jwt.ttl') .'minutes')
@@ -104,13 +105,16 @@ class JWTService
     /**
      * Get user uuid from token.
      *
-     * @param string $token
+     * @param non-empty-string $token
      * @return string|null
      */
     public function getUserUuidFromToken(string $token): string|null
     {
         $parsedToken = $this->parseToken($token);
         if ($this->validateToken($parsedToken)) {
+            // Code analysis fails because of extended interface but is intended
+            // ref: https://github.com/lcobucci/jwt/issues/611
+            //@phpstan-ignore-next-line
             return $parsedToken->claims()->get('sub');
         }
         return null;
@@ -119,7 +123,7 @@ class JWTService
     /**
      * Check if token was logged out.
      *
-     * @param string $token
+     * @param non-empty-string $token
      * @return bool
      */
     public function isTokenLoggedOut(string $token): bool
@@ -131,7 +135,7 @@ class JWTService
     /**
      * Get unique id from token.
      *
-     * @param string $token
+     * @param non-empty-string $token
      * @return string|null
      */
     public function getTokenUniqueId(string $token): string|null
@@ -139,6 +143,9 @@ class JWTService
         $parsedToken = $this->parseToken($token);
         $uniqueId = null;
         if ($this->validateToken($parsedToken)) {
+            // Code analysis fails because of extended interface but is intended
+            // ref: https://github.com/lcobucci/jwt/issues/611
+            //@phpstan-ignore-next-line
             $uniqueId =  $parsedToken->claims()->get('jti', null);
         }
 
@@ -149,9 +156,9 @@ class JWTService
      * Get user from token unique id.
      *
      * @param string $tokenUniqueId
-     * @return User
+     * @return User|null
      */
-    public function getUserFromTokenUniquId(string $tokenUniqueId): User
+    public function getUserFromTokenUniquId(string $tokenUniqueId): User|null
     {
         $token = $this->model->where('unique_id', $tokenUniqueId)->firstOrFail();
         return $token->user;
@@ -161,7 +168,7 @@ class JWTService
      * Update last used field of token.
      *
      * @param string $tokenUniqueId
-     * @return string|null
+     * @return void
      */
     public function tokenUsed(string $tokenUniqueId): void
     {
@@ -171,8 +178,8 @@ class JWTService
     /**
      * Mark token as expired.
      *
-     * @param string $tokenUniqueId
-     * @return string|null
+     * @param non-empty-string $token
+     * @return void
      */
     public function markTokenAsExpired(string $token): void
     {
