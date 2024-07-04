@@ -28,8 +28,7 @@ Follow these steps to get your development environment running:
    
 4. **Update the following environment variables in the `.env` file with your values:**
 
-   ```bash
-    APP_NAME=Buckhill Petshop
+```bash
     APP_URL=http://localhost:8000
     DB_CONNECTION=mysql
     DB_HOST=host.docker.internal
@@ -38,8 +37,8 @@ Follow these steps to get your development environment running:
     DB_USERNAME=root
     DB_PASSWORD=
     VITE_API_URL=http://localhost:8000/api/v1
-   
-   ```
+
+```
 5. **Build and Run with Docker**
 
    Use Docker Compose to build and run the application and its associated services.

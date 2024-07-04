@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\JWTService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -13,7 +14,7 @@ class GetUserDataTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
-    protected Configuration $jwtConfig;
+    protected JWTService $jwtService;
     protected string $token;
 
     protected function setUp(): void
@@ -21,27 +22,13 @@ class GetUserDataTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create([
+            'id' => 1,
             'email' => 'johndoe@example.com',
             'password' => bcrypt('password'),
         ]);
 
-        $this->jwtConfig = Configuration::forAsymmetricSigner(
-            new \Lcobucci\JWT\Signer\Rsa\Sha256(),
-            InMemory::file(config('auth.jwt.private_key'), config('auth.jwt.passphrase')),
-            InMemory::file(config('auth.jwt.public_key'), config('auth.jwt.passphrase'))
-        );
-
-        $this->token = $this->jwtConfig->builder()
-            ->issuedBy(env('APP_URL'))
-            ->permittedFor(env('APP_URL'))
-            ->identifiedBy(bin2hex(random_bytes(16)))
-            ->relatedTo($this->user->getAuthIdentifier())
-            ->issuedAt(new \DateTimeImmutable())
-            ->canOnlyBeUsedAfter(new \DateTimeImmutable())
-            ->expiresAt((new \DateTimeImmutable())->modify('+1 hour'))
-            ->withClaim('uid', $this->user->getAuthIdentifier())
-            ->getToken($this->jwtConfig->signer(), $this->jwtConfig->signingKey())
-            ->toString();
+        $this->jwtService = new JWTService(new \App\Models\JWTToken());
+        $this->token = $this->jwtService->createToken($this->user);
     }
 
     /**

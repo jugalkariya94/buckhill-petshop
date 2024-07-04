@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\JWTToken;
 use App\Models\User;
 use App\Services\JWTService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,41 +12,41 @@ class JWTServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private JWTService $jwtService;
+    protected User $user;
+
     protected function setUp(): void
     {
         // any test specific settings will go here
         parent::setUp();
+        $this->jwtService = new JWTService(new JWTToken());
+        $this->user = User::factory()->create([
+            'id' => 1,
+            'email' => 'johndoe@example.com',
+            'password' => bcrypt('password'),
+        ]);
 
     }
 
     public function testCreateToken()
     {
-        $user = User::factory()->create();
-
-        $jwtService = new JWTService();
-        $token = $jwtService->createToken($user);
+        $token = $this->jwtService->createToken($this->user);
 
         $this->assertNotEmpty($token);
     }
 
     public function testParseToken()
     {
-        $user = User::factory()->create();
+        $token = $this->jwtService->createToken($this->user);
+        $parsedToken = $this->jwtService->parseToken($token);
 
-        $jwtService = new JWTService();
-        $token = $jwtService->createToken($user);
-        $parsedToken = $jwtService->parseToken($token);
-
-        $this->assertEquals($user->getAuthIdentifier(), $parsedToken->claims()->get('uid'));
+        $this->assertEquals($this->user->getAuthIdentifier(), $parsedToken->claims()->get('uid'));
     }
 
     public function testValidateToken()
     {
-        $user = User::factory()->create();
-
-        $jwtService = new JWTService();
-        $token = $jwtService->createToken($user);
-        $parsedToken = $jwtService->parseToken($token);
-        $this->assertTrue($jwtService->validateToken($parsedToken));
+        $token = $this->jwtService->createToken($this->user);
+        $parsedToken = $this->jwtService->parseToken($token);
+        $this->assertTrue($this->jwtService->validateToken($parsedToken));
     }
 }
