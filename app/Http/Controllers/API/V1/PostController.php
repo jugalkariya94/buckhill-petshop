@@ -5,6 +5,41 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 
+/**
+ * @OA\Schema(
+ *   schema="Post",
+ *   title="Post API",
+ *   type="object",
+ *   @OA\Property(
+ *     property="uuid",
+ *     type="string",
+ *     format="uuid",
+ *     description="The unique identifier of the blog post"
+ *   ),
+ *   @OA\Property(
+ *     property="title",
+ *     type="string",
+ *     description="The title of the blog post"
+ *   ),
+ *   @OA\Property(
+ *     property="content",
+ *     type="string",
+ *     description="The content of the blog post"
+ *   ),
+ *   @OA\Property(
+ *     property="created_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="The date and time when the blog post was created"
+ *   ),
+ *   @OA\Property(
+ *     property="updated_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="The date and time when the blog post was last updated"
+ *   )
+ * )
+ */
 class PostController extends Controller
 {
 
@@ -21,7 +56,7 @@ class PostController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/BlogPost")
+     *                 @OA\Items(ref="#/components/schemas/Post")
      *             ),
      *             @OA\Property(property="links", type="object",
      *                 @OA\Property(property="first", type="string", example="http://example.com/api/v1/main/blog?page=1"),

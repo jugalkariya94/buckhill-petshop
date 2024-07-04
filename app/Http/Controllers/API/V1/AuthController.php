@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
+
 class AuthController extends Controller
 {
     //
@@ -37,23 +38,25 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/user/create",
      *     summary="Create a new user",
+     *     tags={"User"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *              @OA\Property(property="first_name", type="string", example="John", description="The first name of the user", required=true),
-     *              @OA\Property(property="last_name ", type="string", example="Doe", description="The last name of the user", required=true),
-     *              @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user", required=true),
-     *              @OA\Property(property="password", type="string", example="password", description="The password of the user", required=true),
-     *              @OA\Property(property="password_confirmation", type="string", example="password", description="The password confirmation of the user", required=true),
-     *              @OA\Property(property="address", type="string", example="1234 Elm St", description="The address of the user", required=true),
-     *              @OA\Property(property="phone_number", type="string", example="1234567890", description="The phone number of the user", required=true),
-     *              @OA\Property(property="is_marketing", type="boolean", example=true, description="Whether the user wants to receive marketing emails", required=false),
-     *              @OA\Property(property="avatar", type="string", example="48da3352-8d93-41a4-ab67-e17674dbc307", description="The avatar of the user", required=false),
+     *              required={"first_name", "last_name", "email", "password", "password_confirmation", "address", "phone_number"},
+     *              @OA\Property(property="first_name", type="string", example="John", description="The first name of the user"),
+     *              @OA\Property(property="last_name", type="string", example="Doe", description="The last name of the user"),
+     *              @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user"),
+     *              @OA\Property(property="password", type="string", example="password", description="The password of the user"),
+     *              @OA\Property(property="password_confirmation", type="string", example="password", description="The password confirmation of the user"),
+     *              @OA\Property(property="address", type="string", example="1234 Elm St", description="The address of the user"),
+     *              @OA\Property(property="phone_number", type="string", example="1234567890", description="The phone number of the user"),
+     *              @OA\Property(property="is_marketing", type="boolean", example=true, description="Whether the user wants to receive marketing emails"),
+     *              @OA\Property(property="avatar", type="string", example="48da3352-8d93-41a4-ab67-e17674dbc307", description="The avatar of the user")
      *         )
      *     ),
      *     @OA\Response(response=201, description="User created successfully"),
-     *     @OA\Response(response=400, description="Bad request")
-     *     @OA\Response(response=422, description="Validation error")
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=500, description="Server error")
      * )
      */
@@ -80,15 +83,17 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/user/login",
      *     summary="User login",
+     *     tags={"User"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user", required=true),
-     *             @OA\Property(property="password", type="string", example="password", description="The password of the user", required=true)
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user"),
+     *             @OA\Property(property="password", type="string", example="password", description="The password of the user")
      *         )
      *     ),
      *     @OA\Response(response=200, description="Login successful"),
-     *     @OA\Response(response=401, description="Unauthorized")
+     *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=500, description="Server error")
      * )
      */
@@ -109,6 +114,7 @@ class AuthController extends Controller
      * @OA\Get(
      *     path="/api/v1/user",
      *     summary="Get authenticated user data",
+     *     tags={"User"},
      *     @OA\Response(response=200, description="Successful operation"),
      *     @OA\Response(response=401, description="Unauthorized")
      * )
@@ -128,6 +134,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/user/forgot-password",
      *     summary="Forgot password",
+     *     tags={"User"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -135,7 +142,7 @@ class AuthController extends Controller
      *         )
      *     ),
      *     @OA\Response(response=200, description="Email sent if user exists"),
-     *     @OA\Response(response=422, description="Validation error")
+     *     @OA\Response(response=422, description="Validation error"),
      *     @OA\Response(response=500, description="Server error")
      * )
      */
@@ -159,6 +166,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/user/reset-password-token",
      *     summary="Reset password using token",
+     *     tags={"User"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -170,7 +178,7 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(response=200, description="Password reset successful"),
      *     @OA\Response(response=422, description="Validation error"),
-     *     @OA\Response(response=400, description="Invalid token")
+     *     @OA\Response(response=400, description="Invalid token"),
      *     @OA\Response(response=500, description="Server token")
      * )
      */
@@ -188,9 +196,10 @@ class AuthController extends Controller
      * @OA\Delete(
      *     path="/api/v1/user",
      *     summary="Delete user",
+     *     tags={"User"},
      *     @OA\Response(response=200, description="User deleted successfully"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     *     @OA\Response(response=500, description="Server error")
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Server error"),
      *     @OA\Response(response=404, description="User not found")
      * )
      */
@@ -213,9 +222,10 @@ class AuthController extends Controller
      * @OA\Get(
      *     path="/api/v1/user/logout",
      *     summary="User logout",
+     *     tags={"User"},
      *     @OA\Response(response=200, description="Logout successful"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     *     @OA\Response(response=500, description="Server error")
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Server error"),
      *     @OA\Response(response=404, description="User not found")
      * )
      */
@@ -241,6 +251,7 @@ class AuthController extends Controller
      * @OA\Put(
      *     path="/api/v1/user/edit",
      *     summary="Update user information",
+     *     tags={"User"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -248,7 +259,7 @@ class AuthController extends Controller
      *             @OA\Property(property="last_name", type="string", example="Doe", description="The last name of the user"),
      *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="The email of the user"),
      *             @OA\Property(property="password", example="password", type="string"),
-     *             @OA\Property(property="password_confirmation", example="password", type="string")
+     *             @OA\Property(property="password_confirmation", example="password", type="string"),
      *             @OA\Property(property="address", type="string", example="1234 Elm St", description="The address of the user"),
      *             @OA\Property(property="phone_number", type="string", example="1234567890", description="The phone number of the user"),
      *             @OA\Property(property="is_marketing", type="boolean", example=true, description="Whether the user wants to receive marketing emails"),

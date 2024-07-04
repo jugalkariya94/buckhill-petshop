@@ -1,0 +1,574 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Buckhill Petshop API",
+        "description": "API implementation Buckhill petshop project",
+        "contact": {
+            "name": "Jugal Kariya",
+            "email": "jugalkariya@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/user/create": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create a new user",
+                "operationId": "4fa47cd5a569e88d933b5360ad13ed8e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "address",
+                                    "phone_number"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "description": "The first name of the user",
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "description": "The last name of the user",
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "description": "The email of the user",
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "The password of the user",
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "The password confirmation of the user",
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "address": {
+                                        "description": "The address of the user",
+                                        "type": "string",
+                                        "example": "1234 Elm St"
+                                    },
+                                    "phone_number": {
+                                        "description": "The phone number of the user",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "is_marketing": {
+                                        "description": "Whether the user wants to receive marketing emails",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "avatar": {
+                                        "description": "The avatar of the user",
+                                        "type": "string",
+                                        "example": "48da3352-8d93-41a4-ab67-e17674dbc307"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login",
+                "operationId": "12bd9ab6f5c37937cf5b4c0de38a905f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "The email of the user",
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "The password of the user",
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get authenticated user data",
+                "operationId": "7b132af43105377007ec9b66b5d7531b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user",
+                "operationId": "df4aa7a4c6db219d2cde0235eee7e9ed",
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/forgot-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Forgot password",
+                "operationId": "7b74cd53158827d8acaea86cfc95e662",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email sent if user exists"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/reset-password-token": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Reset password using token",
+                "operationId": "5205e89e34e7a3e7488b7f77b14f671d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successful"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "400": {
+                        "description": "Invalid token"
+                    },
+                    "500": {
+                        "description": "Server token"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/logout": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User logout",
+                "operationId": "2e1cb783e0868bed8dc7012b21b812b7",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/edit": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user information",
+                "description": "Update user information.",
+                "operationId": "47bdb69cfe61c99de821ae85bd52fa5a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "description": "The first name of the user",
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "description": "The last name of the user",
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "description": "The email of the user",
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "address": {
+                                        "description": "The address of the user",
+                                        "type": "string",
+                                        "example": "1234 Elm St"
+                                    },
+                                    "phone_number": {
+                                        "description": "The phone number of the user",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "is_marketing": {
+                                        "description": "Whether the user wants to receive marketing emails",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "avatar": {
+                                        "description": "The avatar of the user",
+                                        "type": "string",
+                                        "example": "48da3352-8d93-41a4-ab67-e17674dbc307"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/main/blog": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "List all blog posts",
+                "operationId": "d46fd327e8065a22b0b7c9fbfaa7256f",
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of blog posts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Post"
+                                            }
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/main/blog?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/main/blog?page=1"
+                                                },
+                                                "prev": {
+                                                    "type": "null",
+                                                    "example": null
+                                                },
+                                                "next": {
+                                                    "type": "null",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/main/blog"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/v1/main/blog/{uuid}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get a blog post",
+                "operationId": "caebfa8b8eec42d2580b41711b6148a8",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the blog post",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The blog post",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BlogPost"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Post": {
+                "title": "Post API",
+                "properties": {
+                    "uuid": {
+                        "description": "The unique identifier of the blog post",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "The title of the blog post",
+                        "type": "string"
+                    },
+                    "content": {
+                        "description": "The content of the blog post",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "The date and time when the blog post was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "The date and time when the blog post was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "BlogPost": {
+                "properties": {
+                    "uuid": {
+                        "description": "The unique identifier of the blog post",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "The title of the blog post",
+                        "type": "string"
+                    },
+                    "content": {
+                        "description": "The content of the blog post",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "The date and time when the blog post was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "The date and time when the blog post was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "Posts",
+            "description": "Posts"
+        }
+    ]
+}
