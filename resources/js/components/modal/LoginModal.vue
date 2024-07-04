@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import logo from '@/assets/images/Vector.svg';
 import {emailRules} from "@/service/validation/rules/emailRules";
 import {passwordRules} from "@/service/validation/rules/passwordRules";
-
+import {useAuthStore} from "@/store/authStore";
 export default defineComponent({
     name: "LoginModal",
     data() {
@@ -15,10 +15,22 @@ export default defineComponent({
             logo,
             emailRules,
             passwordRules,
-
+            error: ''
         };
     },
     methods: {
+        login() {
+            const store = useAuthStore();
+
+            if (this.valid) {
+                store.login(this.email, this.password);
+                if (store.error !== null || store.error !== undefined || store.error !== '') {
+                    this.error = store.error;
+                } else {
+                    this.hideLoginPopup();
+                }
+            }
+        },
         hideLoginPopup() {
             this.isLoginPopupVisible = false;
         },
@@ -41,13 +53,24 @@ export default defineComponent({
         <template v-slot:default="{ isActive }">
             <v-card>
                 <v-card-title class="align-center">
-                    <v-avatar size="100" class="avatar-with-text d-flex flex-column mx-auto">
-                        <v-img class="d-flex" width="50" :src="logo" :cover="false"></v-img>
+                    <v-avatar size="100" class="avatar-with-text flex-column mx-auto">
+                        <v-img class="d-flex flex-0-0" width="50" :src="logo" :cover="false"></v-img>
                         <div class="d-flex avatar-text text-center">petson.</div>
                     </v-avatar>
                 </v-card-title>
                 <v-card-text>
-                    <v-form fast-fail @submit.prevent>
+                    <v-alert
+                        v-if="error"
+                        title="Error while logging in"
+                        :text="error"
+                        type="error"
+                        variant="outlined"
+                        class="my-5"
+                    ></v-alert>
+                    <v-spacer></v-spacer>
+                    <v-form fast-fail @submit.prevent v-model="valid">
+
+
                         <v-text-field
                             label="Email"
                             type="email"
@@ -65,7 +88,7 @@ export default defineComponent({
                         ></v-text-field>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn type="submit" class="bg-primary text-white" variant="elevated">Login</v-btn>
+                            <v-btn type="submit" class="bg-primary text-white" variant="elevated" @click="login">Login</v-btn>
                             <v-btn variant="text" @click="hideLoginPopup">Cancel</v-btn>
                         </v-card-actions>
                     </v-form>
