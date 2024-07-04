@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         //
         Auth::extend('jwt', function ($app, $name, array $config) {
             $jwtService = $app->make(JWTService::class);
-            $guard = new JWTGuard(Auth::createUserProvider($config['provider']), $app['request'], $jwtService);
+            $guard = new JWTGuard($app['request'], $jwtService, Auth::createUserProvider($config['provider']));
             $app->refresh('request', $guard, 'setRequest');
             return $guard;
         });

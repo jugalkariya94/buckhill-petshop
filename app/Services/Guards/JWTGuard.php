@@ -10,19 +10,42 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use Lcobucci\JWT\Configuration;
 
+/**
+ *
+ */
 class JWTGuard implements Guard
 {
+    /**
+     * @var Request
+     */
     protected Request $request;
+    /**
+     * @var JWTService
+     */
     protected JWTService $service;
 
+    /**
+     * @var UserProvider|null
+     */
+    protected $provider;
+
     use GuardHelpers;
-    public function __construct(UserProvider $provider, Request $request, JWTService $service)
+
+    /**
+     * @param UserProvider|null $provider
+     * @param Request $request
+     * @param JWTService $service
+     */
+    public function __construct(Request $request, JWTService $service, ?UserProvider $provider = null)
     {
         $this->provider = $provider;
         $this->request = $request;
         $this->service = $service;
     }
 
+    /**
+     * @return \App\Models\User|Authenticatable|null
+     */
     public function user()
     {
         // If the user is already set, return it
@@ -52,6 +75,9 @@ class JWTGuard implements Guard
 //
 //            $this->user = $this->provider->retrieveById($authId);
             $tokenUniqueId = $this->service->getTokenUniqueId($tokenString);
+            if (!$tokenUniqueId) {
+                return null;
+            }
 
             // get user from token unique id
             $this->user = $this->service->getUserFromTokenUniquId($tokenUniqueId);
@@ -65,6 +91,10 @@ class JWTGuard implements Guard
     }
 
 
+    /**
+     * @param array<mixed> $credentials
+     * @return false
+     */
     public function validate(array $credentials = [])
     {
         // JWT Guard does not validate using credentials
