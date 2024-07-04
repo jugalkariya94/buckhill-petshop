@@ -1,13 +1,21 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import logo from '@/assets/images/Vector.svg';
+import {emailRules} from "@/service/validation/rules/emailRules";
+import {passwordRules} from "@/service/validation/rules/passwordRules";
 
 export default defineComponent({
     name: "LoginModal",
     data() {
         return {
+            valid: false,
+            email: '',
+            password: '',
             isLoginPopupVisible: false,
             logo,
+            emailRules,
+            passwordRules,
+
         };
     },
     methods: {
@@ -15,7 +23,6 @@ export default defineComponent({
             this.isLoginPopupVisible = false;
         },
         showLoginPopup() {
-            console.log('showLoginPopup');
             this.isLoginPopupVisible = true;
         }
     }
@@ -40,22 +47,25 @@ export default defineComponent({
                     </v-avatar>
                 </v-card-title>
                 <v-card-text>
-                    <v-form>
+                    <v-form fast-fail @submit.prevent>
                         <v-text-field
                             label="Email"
                             type="email"
                             variant="outlined"
-                            required
+                            v-model="email"
+                            :required="true"
+                            :rules="emailRules"
                         ></v-text-field>
                         <v-text-field
                             label="Password"
                             type="password"
                             variant="outlined"
-                            required
+                            v-model="password"
+                            :rules="passwordRules"
                         ></v-text-field>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn type="submit" class="bg-primary text-white"  variant="elevated">Login</v-btn>
+                            <v-btn type="submit" class="bg-primary text-white" variant="elevated">Login</v-btn>
                             <v-btn variant="text" @click="hideLoginPopup">Cancel</v-btn>
                         </v-card-actions>
                     </v-form>
