@@ -57,7 +57,7 @@ class User extends Authenticatable
     /**
      * Get the user's JWT tokens.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\JWTToken>
      */
     public function jwtTokens(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

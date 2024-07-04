@@ -65,12 +65,14 @@ Follow these steps to get your development environment running:
     docker compose exec buckhill-backend php artisan migrate --seed
     ```
 8. **Generate private and public key for JWT**
-
    ```bash
-   docker compose exec buckhill-backend openssl genpkey -algorithm RSA -out storage/oauth-private.key -aes256
+   docker compose exec buckhill-backend sh
    ```
    ```bash
-   docker compose exec buckhill-backend openssl rsa -pubout -in storage/oauth-private.key -out storage/oauth-public.key
+   openssl genpkey -algorithm RSA -out storage/oauth-private.key -aes256
+   ```
+   ```bash
+   openssl rsa -pubout -in storage/oauth-private.key -out storage/oauth-public.key
    ```    
 
 ## Usage

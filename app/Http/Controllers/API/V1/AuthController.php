@@ -190,13 +190,17 @@ class AuthController extends Controller
      *     summary="Delete user",
      *     @OA\Response(response=200, description="User deleted successfully"),
      *     @OA\Response(response=401, description="Unauthorized")
-     *    @OA\Response(response=500, description="Server error")
+     *     @OA\Response(response=500, description="Server error")
+     *     @OA\Response(response=404, description="User not found")
      * )
      */
     public function deleteUser(Request $request): JsonResponse
     {
         try {
             $user = auth()->user();
+            if (!$user || empty($request->bearerToken())) {
+                return response()->json(['success' => false, 'error' => 'User not found'], 404);
+            }
             $this->userService->delete($user->uuid);
             $this->jwtService->markTokenAsExpired($request->bearerToken());
             return response()->json(['success' => true, 'message' => 'User deleted successfully']);
@@ -211,12 +215,18 @@ class AuthController extends Controller
      *     summary="User logout",
      *     @OA\Response(response=200, description="Logout successful"),
      *     @OA\Response(response=401, description="Unauthorized")
+     *     @OA\Response(response=500, description="Server error")
+     *     @OA\Response(response=404, description="User not found")
      * )
      */
     public function logout(Request $request): JsonResponse
     {
         try {
             $token = request()->bearerToken();
+            if (empty($token)) {
+                return response()->json(['success' => false, 'error' => 'User not found'], 404);
+            }
+
             // logout operation
             $this->jwtService->markTokenAsExpired($token);
             return response()->json(['success' => true]);
@@ -255,6 +265,9 @@ class AuthController extends Controller
     {
         try {
             $user = auth()->user();
+            if (!$user) {
+                return response()->json(['success' => false, 'error' => 'User not found'], 404);
+            }
             $validatedData = $request->validated();
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = Hash::make($validatedData['password']);

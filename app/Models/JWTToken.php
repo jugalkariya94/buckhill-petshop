@@ -16,12 +16,12 @@ class JWTToken extends Model
 
     protected $table = 'jwt_tokens';
     /**
-     * @var string[]
+     * @var array<int, string>
      */
     protected $fillable = ['user_id', 'unique_id', 'token_title', 'restrictions', 'permissions', 'expires_at', 'last_used_at', 'refreshed_at'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, JWTToken>
      */
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -30,16 +30,16 @@ class JWTToken extends Model
 
     /**
      * Check if the token is expired
-     * @return Attribute
+     * @return Attribute<bool, mixed>
      */
     public function isExpired():Attribute
     {
-        return Attribute::make(get: $this->expires_at < now());
+        return Attribute::make(get: fn () => $this->expires_at < now());
     }
 
     /**
      * Check if the token is expired
-     * @return Builder
+     * @return Builder<JWTToken>
      */
     public function scopeExpired(): Builder
     {
@@ -49,7 +49,7 @@ class JWTToken extends Model
 
     /**
      * Get the prunable model query.
-     * @return Builder
+     * @return Builder<JWTToken>
      */
     public function prunable(): Builder
     {

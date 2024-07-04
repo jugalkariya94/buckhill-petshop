@@ -46,7 +46,7 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $blogs = Post::paginate()->toArray();
         return response()->json($blogs, 200);
@@ -82,7 +82,7 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function get(Post $post)
+    public function get(Post $post): \Illuminate\Http\JsonResponse
     {
         return response()->json(['success' => true, 'data' => $post], 200);
     }
